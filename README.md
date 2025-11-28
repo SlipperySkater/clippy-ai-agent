@@ -106,6 +106,32 @@ python main.py --url "https://youtube.com/watch?v=VIDEO_ID"
 </details>
 
 <details>
+<summary><b>🖥️ GUI Mode</b></summary>
+
+Launch a simple desktop interface for one-click processing and log viewing:
+
+```bash
+python gui.py
+```
+
+To ship a click-to-run executable of the GUI (handy for Windows users):
+
+```bash
+pip install pyinstaller
+python build_gui_exe.py
+```
+
+The binary will be created in `dist/ClippyGUI.exe`.
+
+The GUI lets you:
+
+- Pick a custom `config.yaml`
+- Paste a URL or browse for a local video file
+- Run batch jobs from a text file
+- Start or stop the built-in scheduler
+</details>
+
+<details>
 <summary><b>📚 Batch Processing</b></summary>
 
 Create `videos.txt`:
