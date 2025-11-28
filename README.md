@@ -118,6 +118,7 @@ To ship a click-to-run executable of the GUI (handy for Windows users):
 
 ```bash
 pip install pyinstaller
+pip install imageio imageio-ffmpeg  # ensures PyInstaller bundles the video backend
 python build_gui_exe.py
 ```
 
