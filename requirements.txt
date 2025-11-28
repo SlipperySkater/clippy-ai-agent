@@ -7,6 +7,8 @@ opencv-python>=4.8.1        # Computer vision and image processing
 Pillow>=10.1.0              # Image manipulation
 numpy>=1.24.3               # Numerical computing
 scipy>=1.11.4               # Scientific computing
+imageio>=2.34.0             # Video reading/writing backend for moviepy
+imageio-ffmpeg>=0.5.0       # FFmpeg plugin used by imageio
 
 # AI and NLP
 transformers>=4.35.2        # Hugging Face transformers
