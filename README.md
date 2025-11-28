@@ -114,6 +114,15 @@ Launch a simple desktop interface for one-click processing and log viewing:
 python gui.py
 ```
 
+To ship a click-to-run executable of the GUI (handy for Windows users):
+
+```bash
+pip install pyinstaller
+python build_gui_exe.py
+```
+
+The binary will be created in `dist/ClippyGUI.exe`.
+
 The GUI lets you:
 
 - Pick a custom `config.yaml`
