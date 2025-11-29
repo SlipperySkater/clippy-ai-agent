@@ -18,6 +18,7 @@ video:
   max_duration_seconds: 3600  # 1 hour max input video
   clip_duration_min: 25       # Minimum clip length
   clip_duration_max: 65       # Maximum clip length
+  max_highlights: 5           # Maximum clips to generate per video
   
   # Output formats
   resolution: "1080x1920"     # 9:16 aspect ratio

@@ -261,8 +261,8 @@ class ContentAnalyzer:
             if not overlap_found:
                 filtered.append(highlight)
         
-        # Limit to top highlights
-        max_highlights = 5
+        # Limit to top highlights (configurable via video.max_highlights)
+        max_highlights = self.config.get("video.max_highlights", 5)
         filtered = filtered[:max_highlights]
         
         # Ensure minimum quality threshold

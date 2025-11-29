@@ -48,6 +48,7 @@ class ClippyGUI:
         self.config_file_var = tk.StringVar(value="config.yaml")
         self.status_var = tk.StringVar(value="Ready")
         self.progress_var = tk.IntVar(value=0)
+        self.max_clips_var = tk.IntVar(value=5)
 
         self._build_ui()
 
@@ -160,12 +161,21 @@ class ClippyGUI:
         config_entry.grid(row=0, column=1, padx=8, sticky="ew")
         self._add_button(config_frame, text="Browse", command=self._select_config).grid(row=0, column=2)
 
+        ttk.Label(config_frame, text="Max clips to generate:").grid(row=1, column=0, sticky="w")
+        ttk.Spinbox(
+            config_frame,
+            from_=1,
+            to=20,
+            textvariable=self.max_clips_var,
+            width=6,
+        ).grid(row=1, column=1, padx=8, sticky="w")
+
         ttk.Label(
             config_frame,
             text="Tip: copy config.example.yaml to config.yaml then update your keys before running.",
             font=("Helvetica", 9),
             foreground="#cbd5e1",
-        ).grid(row=1, column=0, columnspan=3, pady=(6, 0), sticky="w")
+        ).grid(row=2, column=0, columnspan=3, pady=(6, 0), sticky="w")
 
         notebook = ttk.Notebook(parent)
         notebook.grid(row=1, column=0, sticky="nsew", padx=4)
@@ -283,6 +293,9 @@ class ClippyGUI:
         self.agent = ClippyAgent(config_path)
         self.agent_config_path = config_path
 
+        # Pull UI defaults from the loaded config
+        self.max_clips_var.set(self.agent.config.get("video.max_highlights", self.max_clips_var.get()))
+
         if self.log_sink_id is not None:
             logger.remove(self.log_sink_id)
         self.log_sink_id = logger.add(TextboxLogHandler(self.log_widget), format="{time:HH:mm:ss} | {level} | {message}")
@@ -326,6 +339,7 @@ class ClippyGUI:
         self._set_status("Processing single video…")
         self._toggle_buttons(state=tk.DISABLED)
         self.progress_var.set(25)
+        self._apply_clip_preferences()
         self._run_async(self.agent.process_video(source, title=self.title_var.get().strip() or None))
 
     def _on_process_batch(self):
@@ -349,10 +363,12 @@ class ClippyGUI:
         self._set_status(f"Processing batch ({len(entries)} items)…")
         self._toggle_buttons(state=tk.DISABLED)
         self.progress_var.set(35)
+        self._apply_clip_preferences()
         self._run_async(self.agent.batch_process(entries))
 
     def _on_start_scheduler(self):
         self._ensure_agent()
+        self._apply_clip_preferences()
         self.agent.scheduler.start()
         self._set_status("Scheduler running")
         self.progress_var.set(100)
@@ -376,6 +392,18 @@ class ClippyGUI:
         self.root.clipboard_clear()
         self.root.clipboard_append(content)
         messagebox.showinfo("Copied", "Logs copied to clipboard.")
+
+    def _apply_clip_preferences(self):
+        if not self.agent:
+            return
+
+        try:
+            max_clips = max(1, int(self.max_clips_var.get()))
+        except (TypeError, tk.TclError):
+            max_clips = 5
+
+        self.max_clips_var.set(max_clips)
+        self.agent.config.set("video.max_highlights", max_clips)
 
     def run(self):
         self.root.mainloop()
